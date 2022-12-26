@@ -30,7 +30,7 @@ func NewClient(name string, email string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{}, err
+	return client, err
 }
 
 func (c *Client) AddAccount(account *Account) error {
