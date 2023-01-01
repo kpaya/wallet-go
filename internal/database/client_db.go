@@ -10,9 +10,13 @@ type ClientDb struct {
 	DB *sql.DB
 }
 
+func NewClientDb(db *sql.DB) *ClientDb {
+	return &ClientDb{DB: db}
+}
+
 func (c *ClientDb) Get(id string) (*entity.Client, error) {
 	var client entity.Client
-	row := c.DB.QueryRow("SELECT id, name, email, created_at FROM client WHERE $1", id)
+	row := c.DB.QueryRow("SELECT id, name, email, created_at FROM clients WHERE id = ?", id)
 	if err := row.Scan(&client.ID, &client.Name, &client.Email, &client.CreatedAt); err != nil {
 		return nil, err
 	}
@@ -20,7 +24,7 @@ func (c *ClientDb) Get(id string) (*entity.Client, error) {
 }
 
 func (c *ClientDb) Save(client *entity.Client) error {
-	stmt, err := c.DB.Prepare("INSERT INTO client (id, name, email, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)")
+	stmt, err := c.DB.Prepare("INSERT INTO clients (id, name, email, created_at, updated_at) VALUES (?, ?, ?, ?, ?)")
 	if err != nil {
 		return err
 	}
